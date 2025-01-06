@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria de Imagens</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Galeria de Imagens - Animais</h1>
+        <div class="busca">
+            <input type="text" id="searchInput" placeholder="Buscar por animais...">
+            <button onclick="filtrarImagens()">Buscar</button>
+        </div>
+    </header>
+
+    <div class="galeria">
+        <!-- Galeria de Imagens será carregada aqui -->
+    </div>
+
+    <section>
+        <p>Encontre as mais belas imagens de animais. Digite seu preferido!</p>
+    </section>
+
+    <footer>
+        <p>© 2024 VRS Galeria de Fotos. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        const galeriaDiv = document.querySelector('.galeria');
+        const urlBase = 'https://api.unsplash.com/search/photos';
+        const accessKey = 'tp2HZa174On6FUhz01vMoQGUpolUduE6MnFiSJSXmoM'; // Substitua pela sua chave da API
+
+        //carregar imagens de uma coleção de animais
+        function carregarImagens(query = 'pet') {
+            const url = `${urlBase}?query=${query}&client_id=${accessKey}&per_page=10`; // 10 imagens por página
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    exibirImagens(data.results); // Passa os resultados para exibir as imagens
+                })
+                .catch(err => console.log(err));
+        }
+
+        //exibir as imagens
+        function exibirImagens(imagens) {
+            galeriaDiv.innerHTML = ''; 
+            imagens.forEach(image => {
+                const galeriaItem = document.createElement('div');
+                galeriaItem.classList.add('single-galeria');
+                galeriaItem.innerHTML = `
+                    <img src="${image.urls.small}" alt="${image.alt_description}">
+                    <div class="info">
+                        <h2>${image.alt_description || 'Título'}</h2>
+                    </div>
+                `;
+                galeriaDiv.appendChild(galeriaItem);
+            });
+        }
+
+        //filtrar as imagens com base na palavra-chave
+        function filtrarImagens() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            carregarImagens(searchInput); //Carrega as imagens com o filtro aplicado
+        }
+
+        //Carregar as imagens
+        carregarImagens();
+    </script>
+</body>
+</html>
+
+
+
